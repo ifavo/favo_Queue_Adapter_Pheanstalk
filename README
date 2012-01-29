@@ -1,0 +1,49 @@
+<?
+
+class IndexController extends Zend_Controller_Action
+{
+
+    public function indexAction() {
+		$adapter = new favo_Queue_Adapter_Pheanstalk();
+		$queue1 = 'test';
+		$queue2 = 'test2';
+
+		$queues = new Zend_Queue($adapter, array());
+		$queueList = $queues->getQueues();
+		if ( in_array($queue1, $queueList) ) {
+			$queue1 = new Zend_Queue($adapter, array('name' => $queue1));
+		}
+		else {
+			$queue1 = $queues->createQueue($queue1);
+		}
+
+		if ( in_array($queue2, $queueList) ) {
+			$queue2 = new Zend_Queue($adapter, array('name' => $queue2));
+		}
+		else {
+			$queue2 = $queues->createQueue($queue2);
+		}
+
+		echo "count1: ".$queue1->count()."<br>";
+		echo "count2: ".$queue2->count()."<br>";
+
+		$queue1->send('1');
+		$queue2->send('2');
+		$queue2->send('2');
+
+		echo "count1: ".$queue1->count()."<br>";
+		echo "count2: ".$queue2->count()."<br>";
+
+	    $messages = $queue1->receive();
+		foreach ( $messages as $message ) {
+			$queue1->deleteMessage($message);
+			echo $message->body;
+		}
+
+		$messages = $queue2->receive(2);
+		foreach ( $messages as $message ) {
+		$queue2->deleteMessage($message);
+			echo $message->body;
+		}
+	}
+}
