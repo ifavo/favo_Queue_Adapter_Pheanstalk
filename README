@@ -34,7 +34,7 @@ class IndexController extends Zend_Controller_Action
 		echo "count1: ".$queue1->count()."<br>";
 		echo "count2: ".$queue2->count()."<br>";
 
-	    $messages = $queue1->receive();
+		$messages = $queue1->receive();
 		foreach ( $messages as $message ) {
 			$queue1->deleteMessage($message);
 			echo $message->body;
