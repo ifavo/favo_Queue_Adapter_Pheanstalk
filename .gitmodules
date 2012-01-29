@@ -1,0 +1,3 @@
+[submodule "library/ext/pheanstalk"]
+	path = library/ext/pheanstalk
+	url = git://github.com/pda/pheanstalk.git
